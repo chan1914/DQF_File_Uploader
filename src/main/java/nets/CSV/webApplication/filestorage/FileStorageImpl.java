@@ -16,8 +16,7 @@ import java.util.stream.Stream;
 
 @Service
 public class FileStorageImpl implements FileStorage{
-	
-	//Logger log = LoggerFactory.getLogger(this.getClass().getName());
+
 	private final Path rootLocation = Paths.get("filestorage");
  
 	@Override
