@@ -30,7 +30,7 @@ pipeline{
         }
         stage('Run Docker container'){
             steps{
-                sh "docker run -d -p 90:8080 --network dqf-net --name analysisrepo ${imagename}"
+                sh "docker run -d -p 90:8080 --network dqf-net --name ${dockercontainername} ${imagename}"
             }
         }
     }
