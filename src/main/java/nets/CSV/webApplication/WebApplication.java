@@ -1,18 +1,26 @@
 package nets.CSV.webApplication;
 
-import nets.CSV.webApplication.FileUploader.FileUploadController;
+import nets.CSV.webApplication.filestorage.FileStorage;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import java.io.File;
+
+import javax.annotation.Resource;
 
 @SpringBootApplication
-@ComponentScan({"nets.CSV.webApplication.FileUploader"})
-public class WebApplication {
+public class WebApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
-		new File(FileUploadController.uploadDirectory).mkdir();
+	@Resource
+	FileStorage fileStorage;
+
+	public static void main(String[] args) throws Exception {
 		SpringApplication.run(WebApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		fileStorage.deleteAll();
+		fileStorage.init();
 	}
 
 }
