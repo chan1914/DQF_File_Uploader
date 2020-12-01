@@ -16,11 +16,10 @@ import java.util.stream.Stream;
 
 @Service
 public class FileStorageImpl implements FileStorage{
-	
-	//Logger log = LoggerFactory.getLogger(this.getClass().getName());
+
 	private final Path rootLocation = Paths.get("filestorage");
  
-	@Override
+
 	public void store(MultipartFile file){
 		try {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
@@ -29,7 +28,7 @@ public class FileStorageImpl implements FileStorage{
         }
 	}
 	
-	@Override
+
     public Resource loadFile(String filename) {
         try {
             Path file = rootLocation.resolve(filename);
@@ -44,12 +43,12 @@ public class FileStorageImpl implements FileStorage{
         }
     }
     
-	@Override
+
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
-	@Override
+
     public void init() {
         try {
             Files.createDirectory(rootLocation);
@@ -58,7 +57,7 @@ public class FileStorageImpl implements FileStorage{
         }
     }
 
-	@Override
+
 	public Stream<Path> loadFiles() {
         try {
             return Files.walk(this.rootLocation, 1)
