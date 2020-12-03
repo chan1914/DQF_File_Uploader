@@ -29,4 +29,23 @@ public class Test_CSVDigester {
         assertEquals("US", resultingObject.getString("country"));
         assertEquals(45, resultingObject.getInt("age"));
     }
+    
+    @Test
+    public void CSVFileAsStringToJsonArray(){
+        String file = "id,name,email,country,age\n" +
+                "100,Atta Shah,atta@example.com,PK,30\n" +
+                "101,Alex Jones,alex@example.com,DE,35\n" +
+                "102,Jovan Lee,jovan@example.com,FR,25\n" +
+                "103,Greg Hover,greg@example.com,US,45";
+        
+        String[] results = csvDigester.CSVtoJSON(file);
+
+        for (String s : results) {
+            try {
+                JSONObject passedObject = new JSONObject(s);
+            } catch (JSONException e) {
+                fail();
+            }
+        }
+    }
 }
