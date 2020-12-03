@@ -55,7 +55,7 @@ public class CSVDigester {
     }
 
 
-
-
-
+    public String SerializeRow(String headers, String row) {
+        throw new java.lang.UnsupportedOperationException("Not supported yet");
+    }
 }
