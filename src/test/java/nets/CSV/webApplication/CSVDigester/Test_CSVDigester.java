@@ -13,7 +13,7 @@ import static org.junit.Assert.fail;
 public class Test_CSVDigester {
 
     @Autowired
-    CSVDigester csvDigester;
+    CSVDigester csvDigester = new CSVDigester();
 
     @Test
     public void CSVRowToJson() throws JSONException {
@@ -40,8 +40,7 @@ public class Test_CSVDigester {
                 "102,Jovan Lee,jovan@example.com,FR,25\n" +
                 "103,Greg Hover,greg@example.com,US,45";
 
-        ArrayList<String> results = CSVDigester.CSVToJSON(file);
-
+        ArrayList<String> results = csvDigester.CSVToJSON(file);
         for (String s : results) {
             try {
                 JSONObject passedObject = new JSONObject(s);

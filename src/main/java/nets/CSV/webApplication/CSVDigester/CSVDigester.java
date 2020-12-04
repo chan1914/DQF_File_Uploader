@@ -12,7 +12,7 @@ import java.util.ArrayList;
 @Service
 public class CSVDigester {
 
-    public static ArrayList<java.lang.String> CSVToJSON(String file){
+    public  ArrayList<java.lang.String> CSVToJSON(String file){
 
         //Input file which needs to be parsed
         String fileToParse = "src/users.csv";
@@ -47,11 +47,37 @@ public class CSVDigester {
                 e.printStackTrace();
             }
         }
-        return generateJSON(lines);
+            return generateJSON(lines);
+        // return generateJSON(lines);
+    }
+
+    public String SerializeRow(String headers, String row) {
+
+        int iterator = 0;
+        JSONObject lineJSON = new JSONObject();
+        String[] rowValue = row.split(",");
+
+        for (String str : headers.split(",")) {
+
+            if (typeSelector(rowValue[iterator]) == "string") {
+                lineJSON.put(String.valueOf(str), String.valueOf(rowValue[iterator]));
+            }
+            else{
+                lineJSON.put(String.valueOf(str), (rowValue[iterator]));
+            }
+
+
+        iterator++;
+        }
+        return String.valueOf(lineJSON);
 
     }
 
-    public static ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
+
+
+
+
+    public ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
         ArrayList<String> JSONCollection = new ArrayList<String>();
         for (int i = 0; i < lines.size(); i++) {
             JSONObject lineJSON = new JSONObject();
@@ -60,6 +86,7 @@ public class CSVDigester {
                 int iterator = 0;
                 for (String str : lines.get(i).split(",")) {
 
+
                     if (typeSelector(str) == "string"){
                         lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), String.valueOf(str));
                     }
@@ -67,15 +94,39 @@ public class CSVDigester {
                         lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), str);
                     }
 
-                    }
+                }
                 JSONCollection.add(String.valueOf(lineJSON));
                 iterator ++;
-                }
             }
-        return JSONCollection;
         }
+        return JSONCollection;
+    }
 
-    private static String typeSelector( String element){
+    //  public ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
+    //    ArrayList<String> JSONCollection = new ArrayList<String>();
+    //    for (int i = 0; i < lines.size(); i++) {
+    //        JSONObject lineJSON = new JSONObject();
+    //        if (i > 0){
+    //
+      //          int iterator = 0;
+      //          for (String str : lines.get(i).split(",")) {
+    //
+      //              if (typeSelector(str) == "string"){
+      //                  lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), String.valueOf(str));
+      //              }
+      //              else {
+      //                  lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), str);
+      //              }
+      //
+     //               }
+     //           JSONCollection.add(String.valueOf(lineJSON));
+     //           iterator ++;
+     //           }
+     //       }
+     //   return JSONCollection;
+     //   }
+
+    private String typeSelector( String element){
 
         String result;
         result = checkDouble(element);
@@ -93,7 +144,7 @@ public class CSVDigester {
         return "string";
     }
 
-    private static String checkDouble(String element){
+    private String checkDouble(String element){
         String result;
 
         try {
@@ -106,7 +157,7 @@ public class CSVDigester {
         return result;
     }
 
-    private static String checkInt(String element){
+    private String checkInt(String element){
         String result;
 
         try {
@@ -119,7 +170,7 @@ public class CSVDigester {
         return result;
     }
 
-    private static String checkBoolean(String element){
+    private String checkBoolean(String element){
         String result;
 
         if (element.toLowerCase() == "false"){
@@ -139,7 +190,4 @@ public class CSVDigester {
 
 
 
-    public String SerializeRow(String headers, String row) {
-        throw new java.lang.UnsupportedOperationException("Not supported yet");
-    }
 }
