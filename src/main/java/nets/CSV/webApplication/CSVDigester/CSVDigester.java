@@ -12,10 +12,10 @@ import java.util.ArrayList;
 @Service
 public class CSVDigester {
 
-    public void CSVToJSON(String file){
+    public static ArrayList<java.lang.String> CSVToJSON(String file){
 
         //Input file which needs to be parsed
-        String fileToParse = "SampleCSVFile.csv";
+        String fileToParse = "src/users.csv";
         BufferedReader fileReader = null;
         ArrayList<String> lines = new ArrayList<String>();
 
@@ -47,12 +47,12 @@ public class CSVDigester {
                 e.printStackTrace();
             }
         }
-        generateJSON(lines);
+        return generateJSON(lines);
 
     }
 
-    public void generateJSON(ArrayList<String> lines){
-
+    public static ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
+        ArrayList<String> JSONCollection = new ArrayList<String>();
         for (int i = 0; i < lines.size(); i++) {
             JSONObject lineJSON = new JSONObject();
             if (i > 0){
@@ -68,12 +68,14 @@ public class CSVDigester {
                     }
 
                     }
+                JSONCollection.add(String.valueOf(lineJSON));
                 iterator ++;
                 }
             }
+        return JSONCollection;
         }
 
-    private String typeSelector( String element){
+    private static String typeSelector( String element){
 
         String result;
         result = checkDouble(element);
@@ -91,7 +93,7 @@ public class CSVDigester {
         return "string";
     }
 
-    private String checkDouble(String element){
+    private static String checkDouble(String element){
         String result;
 
         try {
@@ -104,7 +106,7 @@ public class CSVDigester {
         return result;
     }
 
-    private String checkInt(String element){
+    private static String checkInt(String element){
         String result;
 
         try {
@@ -117,7 +119,7 @@ public class CSVDigester {
         return result;
     }
 
-    private String checkBoolean(String element){
+    private static String checkBoolean(String element){
         String result;
 
         if (element.toLowerCase() == "false"){

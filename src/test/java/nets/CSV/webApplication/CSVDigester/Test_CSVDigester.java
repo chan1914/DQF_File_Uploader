@@ -5,6 +5,8 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -37,8 +39,8 @@ public class Test_CSVDigester {
                 "101,Alex Jones,alex@example.com,DE,35\n" +
                 "102,Jovan Lee,jovan@example.com,FR,25\n" +
                 "103,Greg Hover,greg@example.com,US,45";
-        
-        String[] results = csvDigester.CSVtoJSON(file);
+
+        ArrayList<String> results = CSVDigester.CSVToJSON(file);
 
         for (String s : results) {
             try {
