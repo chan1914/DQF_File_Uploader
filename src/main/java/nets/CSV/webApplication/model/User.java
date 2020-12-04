@@ -21,4 +21,6 @@ public class User {
         this.countryCode = countryCode;
         this.age = age;
     }
+
+    // getters and setters removed for the sake of brevity
 }
