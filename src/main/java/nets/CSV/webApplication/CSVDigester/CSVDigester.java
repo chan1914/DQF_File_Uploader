@@ -15,40 +15,55 @@ public class CSVDigester {
     public  ArrayList<java.lang.String> CSVToJSON(String file){
 
         //Input file which needs to be parsed
-        String fileToParse = "src/users.csv";
-        BufferedReader fileReader = null;
+//        String fileToParse = "src/users.csv";
+//        BufferedReader fileReader = null;
+
         ArrayList<String> lines = new ArrayList<String>();
 
-        //Delimiter used in CSV file
-        final String DELIMITER = ",";
-        try
-        {
-            String line = "";
-            //Create the file reader
-            fileReader = new BufferedReader(new FileReader(fileToParse));
+        String[] listLines = file.split("\\r?\\n");
 
-            //Read the file line by line
-            while ((line = fileReader.readLine()) != null)
-            {
-                lines.add(line);
-                //Print all lines
-                System.out.println(line);
+        for (String str : listLines) {
+            lines.add(str);
+        }
 
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try {
-                fileReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-            return generateJSON(lines);
+
+//        //Delimiter used in CSV file
+//        final String DELIMITER = ",";
+//        try
+//        {
+//            String line = "";
+//            //Create the file reader
+//            fileReader = new BufferedReader(new FileReader(fileToParse));
+//
+//            //Read the file line by line
+//            while ((line = fileReader.readLine()) != null)
+//            {
+//                lines.add(line);
+//                //Print all lines
+//                System.out.println(line);
+//
+//            }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            try {
+//                fileReader.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
         // return generateJSON(lines);
+
+        ArrayList<String> JSONCollection = new ArrayList<String>();
+        int i = 0;
+        for (String str : lines) {
+            JSONCollection.add(SerializeRow(lines.get(0), lines.get(i)));
+            i ++;
+        }
+        return JSONCollection;
     }
 
     public String SerializeRow(String headers, String row) {
@@ -77,30 +92,30 @@ public class CSVDigester {
 
 
 
-    public ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
-        ArrayList<String> JSONCollection = new ArrayList<String>();
-        for (int i = 0; i < lines.size(); i++) {
-            JSONObject lineJSON = new JSONObject();
-            if (i > 0){
-
-                int iterator = 0;
-                for (String str : lines.get(i).split(",")) {
-
-
-                    if (typeSelector(str) == "string"){
-                        lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), String.valueOf(str));
-                    }
-                    else {
-                        lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), str);
-                    }
-
-                }
-                JSONCollection.add(String.valueOf(lineJSON));
-                iterator ++;
-            }
-        }
-        return JSONCollection;
-    }
+//    public ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
+//        ArrayList<String> JSONCollection = new ArrayList<String>();
+//        for (int i = 0; i < lines.size(); i++) {
+//            JSONObject lineJSON = new JSONObject();
+//            if (i > 0){
+//
+//                int iterator = 0;
+//                for (String str : lines.get(i).split(",")) {
+//
+//
+//                    if (typeSelector(str) == "string"){
+//                        lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), String.valueOf(str));
+//                    }
+//                    else {
+//                        lineJSON.put(String.valueOf(lines.get(0).split(",")[iterator]), str);
+//                    }
+//
+//                }
+//                JSONCollection.add(String.valueOf(lineJSON));
+//                iterator ++;
+//            }
+//        }
+//        return JSONCollection;
+//    }
 
     //  public ArrayList<java.lang.String> generateJSON(ArrayList<String> lines){
     //    ArrayList<String> JSONCollection = new ArrayList<String>();
