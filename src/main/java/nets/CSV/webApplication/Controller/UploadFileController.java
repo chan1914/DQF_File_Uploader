@@ -1,7 +1,10 @@
 package nets.CSV.webApplication.Controller;
 
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
 import nets.CSV.webApplication.filestorage.FileStorage;
+import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +56,13 @@ public class UploadFileController {
 
         try {
             String file1 = Files.readString(Paths.get("filestorage/" + file.getOriginalFilename()));
-            List<String> rows = csvDigester.CSVToJSON(file1);
+            List<JSONObject> rows = csvDigester.CSVToJSONList(file1);
             logger.info("Sending rows\t" + rows.size());
-            for(String row : rows){
+
+            for(JSONObject row : rows){
+                JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
-                restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, String.class);
+                restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, JSONObject.class);
             }
         } catch (IOException e) {
             e.printStackTrace();

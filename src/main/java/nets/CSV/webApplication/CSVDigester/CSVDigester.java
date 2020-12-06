@@ -1,5 +1,6 @@
 package nets.CSV.webApplication.CSVDigester;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,51 @@ public class CSVDigester {
         return JSONCollection;
     }
 
+    public  ArrayList<JSONObject> CSVToJSONList(String file){
+
+        //Input file which needs to be parsed
+//        String fileToParse = "src/users.csv";
+//        BufferedReader fileReader = null;
+
+        List<String> lines = Arrays.asList(file.split("\\r?\\n"));
+
+//        //Delimiter used in CSV file
+//        final String DELIMITER = ",";
+//        try
+//        {
+//            String line = "";
+//            //Create the file reader
+//            fileReader = new BufferedReader(new FileReader(fileToParse));
+//
+//            //Read the file line by line
+//            while ((line = fileReader.readLine()) != null)
+//            {
+//                lines.add(line);
+//                //Print all lines
+//                System.out.println(line);
+//
+//            }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            try {
+//                fileReader.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        // return generateJSON(lines);
+
+        ArrayList<JSONObject> JSONCollection = new ArrayList<>();
+        for (int i = 1; i < lines.size(); i++) {
+            JSONCollection.add(SerializeRowAsJson(lines.get(0), lines.get(i)));
+        }
+        return JSONCollection;
+    }
+
     public String SerializeRow(String headers, String row) {
 
         int iterator = 0;
@@ -75,6 +121,28 @@ public class CSVDigester {
         }
         return String.valueOf(lineJSON);
     }
+
+    public JSONObject SerializeRowAsJson(String headers, String row) {
+
+        int iterator = 0;
+        JSONObject lineJSON = new JSONObject();
+        String[] rowValue = row.split(",");
+
+        for (String str : headers.split(",")) {
+
+            if (typeSelector(rowValue[iterator]).equals("string")) {
+                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+            }
+            else{
+                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+            }
+
+            iterator++;
+        }
+        return lineJSON;
+    }
+
+
 
 
 
