@@ -2,6 +2,8 @@ package nets.CSV.webApplication.Controller;
 
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
 import nets.CSV.webApplication.filestorage.FileStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,8 @@ public class UploadFileController {
     @Autowired
     CSVDigester csvDigester;
 
+    Logger logger = LoggerFactory.getLogger(UploadFileController.class);
+
     @GetMapping("/")
     public String index() {
         return "uploadform.html";
@@ -49,6 +53,7 @@ public class UploadFileController {
         try {
             String file1 = Files.readString(Paths.get("filestorage" + file.getOriginalFilename()));
             List<String> rows = csvDigester.CSVToJSON(file1);
+            logger.info("Sending rows\t" + rows.size());
             for(String row : rows){
                 restTemplate.postForObject("http://DQF_Analysis_Core/row", row, String.class);
             }
