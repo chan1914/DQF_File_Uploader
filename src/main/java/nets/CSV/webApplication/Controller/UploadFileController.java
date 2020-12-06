@@ -55,7 +55,7 @@ public class UploadFileController {
             List<String> rows = csvDigester.CSVToJSON(file1);
             logger.info("Sending rows\t" + rows.size());
             for(String row : rows){
-                restTemplate.postForObject("http://DQF_Analysis_Core/row", row, String.class);
+                restTemplate.postForObject("http://DQF_Analysis_Core/row/", row, String.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
