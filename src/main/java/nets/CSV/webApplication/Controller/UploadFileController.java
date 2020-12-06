@@ -51,7 +51,7 @@ public class UploadFileController {
         }
 
         try {
-            String file1 = Files.readString(Paths.get("filestorage" + file.getOriginalFilename()));
+            String file1 = Files.readString(Paths.get("filestorage/" + file.getOriginalFilename()));
             List<String> rows = csvDigester.CSVToJSON(file1);
             logger.info("Sending rows\t" + rows.size());
             for(String row : rows){
