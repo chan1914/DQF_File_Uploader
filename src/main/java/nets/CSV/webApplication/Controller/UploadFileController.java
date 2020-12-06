@@ -40,6 +40,7 @@ public class UploadFileController {
 
     @PostMapping("/")
     public String upload(@RequestParam("uploadfile") MultipartFile file, Model model) {
+        logger.info("File being uplaoded\t" + file.getOriginalFilename());
         try {
             fileStorage.store(file);
             model.addAttribute("message", "File uploaded successfully! -> filename = " + file.getOriginalFilename());
