@@ -8,11 +8,14 @@ import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,7 +65,21 @@ public class UploadFileController {
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
-                restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, JSONObject.class);
+
+                boolean exit = true;
+                int i = 0;
+                do {
+                    try {
+                        restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, JSONObject.class);
+                        exit = true;
+                    } catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerException) {
+                        if (HttpStatus.NOT_FOUND.equals(httpClientOrServerException.getStatusCode())) {
+                            exit = false;
+                            i++;
+                        }
+                    }
+                }while (!exit || i > 4);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
