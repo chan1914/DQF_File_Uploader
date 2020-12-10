@@ -67,19 +67,7 @@ public class UploadFileController {
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
-                boolean exit = true;
-                int i = 0;
-                do {
-                    try {
-                        restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, JSONObject.class);
-                        exit = true;
-                    } catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerException) {
-                        if (HttpStatus.NOT_FOUND.equals(httpClientOrServerException.getStatusCode())) {
-                            exit = false;
-                            i++;
-                        }
-                    }
-                }while (!exit || i > 4);
+                restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, JSONObject.class);
 
             }
         } catch (IOException e) {

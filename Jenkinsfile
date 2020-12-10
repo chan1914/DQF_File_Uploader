@@ -24,7 +24,7 @@ pipeline{
         stage('remove existing image'){
             steps{
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh "docker stop dockercontainername"
+                    sh "docker stop ${dockercontainername}"
                     sh "docker rm -f ${dockercontainername}"
                 }
             }
