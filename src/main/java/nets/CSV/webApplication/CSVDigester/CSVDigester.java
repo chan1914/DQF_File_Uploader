@@ -1,13 +1,13 @@
 package nets.CSV.webApplication.CSVDigester;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import net.minidev.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class CSVDigester {
@@ -18,14 +18,7 @@ public class CSVDigester {
 //        String fileToParse = "src/users.csv";
 //        BufferedReader fileReader = null;
 
-        ArrayList<String> lines = new ArrayList<String>();
-
-        String[] listLines = file.split("\\r?\\n");
-
-        for (String str : listLines) {
-            lines.add(str);
-        }
-
+        List<String> lines = Arrays.asList(file.split("\\r?\\n"));
 
 //        //Delimiter used in CSV file
 //        final String DELIMITER = ",";
@@ -57,11 +50,54 @@ public class CSVDigester {
 //        }
         // return generateJSON(lines);
 
-        ArrayList<String> JSONCollection = new ArrayList<String>();
-        int i = 0;
-        for (String str : lines) {
+        ArrayList<String> JSONCollection = new ArrayList<>();
+        for (int i = 1; i < lines.size(); i++) {
             JSONCollection.add(SerializeRow(lines.get(0), lines.get(i)));
-            i ++;
+        }
+        return JSONCollection;
+    }
+
+    public  ArrayList<JSONObject> CSVToJSONList(String file){
+
+        //Input file which needs to be parsed
+//        String fileToParse = "src/users.csv";
+//        BufferedReader fileReader = null;
+
+        List<String> lines = Arrays.asList(file.split("\\r?\\n"));
+
+//        //Delimiter used in CSV file
+//        final String DELIMITER = ",";
+//        try
+//        {
+//            String line = "";
+//            //Create the file reader
+//            fileReader = new BufferedReader(new FileReader(fileToParse));
+//
+//            //Read the file line by line
+//            while ((line = fileReader.readLine()) != null)
+//            {
+//                lines.add(line);
+//                //Print all lines
+//                System.out.println(line);
+//
+//            }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        finally
+//        {
+//            try {
+//                fileReader.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        // return generateJSON(lines);
+
+        ArrayList<JSONObject> JSONCollection = new ArrayList<>();
+        for (int i = 1; i < lines.size(); i++) {
+            JSONCollection.add(SerializeRowAsJson(lines.get(0), lines.get(i)));
         }
         return JSONCollection;
     }
@@ -74,19 +110,39 @@ public class CSVDigester {
 
         for (String str : headers.split(",")) {
 
-            if (typeSelector(rowValue[iterator]) == "string") {
-                lineJSON.put(String.valueOf(str), String.valueOf(rowValue[iterator]));
+            if (typeSelector(rowValue[iterator]).equals("string")) {
+                lineJSON.put(String.valueOf(str), rowValue[iterator]);
             }
             else{
-                lineJSON.put(String.valueOf(str), (rowValue[iterator]));
+                lineJSON.put(String.valueOf(str), rowValue[iterator]);
             }
 
-
-        iterator++;
+            iterator++;
         }
         return String.valueOf(lineJSON);
-
     }
+
+    public JSONObject SerializeRowAsJson(String headers, String row) {
+
+        int iterator = 0;
+        JSONObject lineJSON = new JSONObject();
+        String[] rowValue = row.split(",");
+
+        for (String str : headers.split(",")) {
+
+            if (typeSelector(rowValue[iterator]).equals("string")) {
+                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+            }
+            else{
+                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+            }
+
+            iterator++;
+        }
+        return lineJSON;
+    }
+
+
 
 
 
@@ -143,66 +199,60 @@ public class CSVDigester {
 
     private String typeSelector( String element){
 
-        String result;
+        boolean result;
         result = checkDouble(element);
-        if (!(result == "N/A")){
-            return result;
+        if (!(result)){
+            return "double";
         }
         result = checkInt(element);
-        if (!(result == "N/A")){
-            return result;
+        if (!(result)){
+            return "int";
         }
         result = checkBoolean(element);
-        if (!(result == "N/A")){
-            return result;
+        if (!(result)){
+            return "boolean";
         }
         return "string";
     }
 
-    private String checkDouble(String element){
-        String result;
+    private boolean checkDouble(String element){
+        boolean result;
 
         try {
             Double.parseDouble(element);
-            result = "double";
+            result = true;
         }
         catch (NumberFormatException e) {
-            result = "N/A";
+            result = false;
         }
         return result;
     }
 
-    private String checkInt(String element){
-        String result;
+    private boolean checkInt(String element){
+        boolean result;
 
         try {
             Integer.parseInt(element);
-            result = "int";
+            result = true;
         }
         catch (NumberFormatException e) {
-            result = "N/A";
+            result = false;
         }
         return result;
     }
 
-    private String checkBoolean(String element){
-        String result;
+    private boolean checkBoolean(String element){
+        boolean result;
 
-        if (element.toLowerCase() == "false"){
-            result = "boolean";
+        if (element.toLowerCase().equals("false")){
+            result = true;
         }
-        else if (element.toLowerCase() == "true"){
-            result = "boolean";
+        else if (element.toLowerCase().equals("true")){
+            result = true;
         }
         else{
-            result = "N/A";
+            result = false;
         }
         return result;
     }
-
-
-
-
-
-
 }
