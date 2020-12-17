@@ -68,6 +68,7 @@ public class UploadFileController {
                 logger.info("Posting row\t" + row);
 
                 int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
+                logger.info("resolved valid id for group " + file.getOriginalFilename());
                 restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
 
             }
