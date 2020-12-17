@@ -62,15 +62,15 @@ public class UploadFileController {
             String file1 = Files.readString(Paths.get("filestorage/" + file.getOriginalFilename()));
             List<JSONObject> rows = csvDigester.CSVToJSONList(file1);
             logger.info("Sending rows\t" + rows.size());
+            int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
-                int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
                 logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
                 restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
-
+                id++;
             }
         } catch (IOException e) {
             e.printStackTrace();
