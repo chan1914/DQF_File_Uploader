@@ -83,7 +83,8 @@ public class UploadFileController {
 
     /*
     @PostMapping("/upload-csv-file")
-    public String UploadCSVFile(@RequestParam("uploadfile") MultipartFile file, Model model) {
+    public String uploadCSVFile(@RequestParam("file") MultipartFile file, Model model) {
+
         // validate file
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a CSV file to upload.");
@@ -94,7 +95,7 @@ public class UploadFileController {
             try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
 
                 // create csv bean reader
-                CsvToBean csvToBean = new CsvToBeanBuilder(reader)
+                CsvToBean<User> csvToBean = new CsvToBeanBuilder(reader)
                         .withType(User.class)
                         .withIgnoreLeadingWhiteSpace(true)
                         .build();
@@ -113,8 +114,8 @@ public class UploadFileController {
                 model.addAttribute("status", false);
             }
         }
+
         return "file-upload-status";
     }
     */
-
 }
