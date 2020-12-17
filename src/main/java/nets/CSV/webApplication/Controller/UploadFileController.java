@@ -67,7 +67,8 @@ public class UploadFileController {
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
-                restTemplate.postForEntity("http://DQF-Analysis-Core/row/", row, JSONObject.class);
+                int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
+                restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
 
             }
         } catch (IOException e) {
