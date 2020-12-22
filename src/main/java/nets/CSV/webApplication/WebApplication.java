@@ -31,8 +31,8 @@ public class WebApplication{
 	public Executor taskExecutor(){
 		final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(2);
-		executor.setMaxPoolSize(32);
-		executor.setQueueCapacity(100);
+		executor.setMaxPoolSize(2);
+		executor.setQueueCapacity(500);
 		executor.setThreadNamePrefix("FileLoaderThread-");
 		return executor;
 	}
