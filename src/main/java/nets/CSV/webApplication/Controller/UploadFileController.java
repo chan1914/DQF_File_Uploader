@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
@@ -81,8 +82,11 @@ public class UploadFileController {
     }
 
     @Async
-    public void sendData(MultipartFile file, int id, JSONObject row) {
+    public CompletableFuture sendData(MultipartFile file, int id, JSONObject row) {
+        logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
         restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
+        logger.info("Saved id:" + id);
+        return new CompletableFuture();
     }
 
 
