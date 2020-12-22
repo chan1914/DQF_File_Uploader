@@ -70,7 +70,6 @@ public class UploadFileController {
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
-                logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
                 sendData(file, id, row);
                 id++;
             }
@@ -82,11 +81,11 @@ public class UploadFileController {
     }
 
     @Async
-    public CompletableFuture sendData(MultipartFile file, int id, JSONObject row) {
+    public CompletableFuture<JSONObject> sendData(MultipartFile file, int id, JSONObject row) {
         logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
         restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
         logger.info("Saved id:" + id);
-        return new CompletableFuture();
+        return CompletableFuture.completedFuture(row);
     }
 
 
