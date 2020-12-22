@@ -66,12 +66,15 @@ public class UploadFileController {
             logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
+            List<CompletableFuture<JSONObject>> completableFutures = new ArrayList<>();
+
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
-                sendData(file, id, row);
+                completableFutures.add(sendData(file, id, row));
                 id++;
+                logger.info(Integer.toString(completableFutures.size()));
             }
         } catch (IOException e) {
             e.printStackTrace();
