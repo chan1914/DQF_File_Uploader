@@ -66,16 +66,20 @@ public class UploadFileController {
             logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
-            List<CompletableFuture<JSONObject>> completableFutures = new ArrayList<>();
+            List<Runnable> runnables = new ArrayList<>();
 
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
-                completableFutures.add(sendData(file, id, row));
+                int finalId = id;
+                Runnable task = () -> sendData(file, finalId, row);
+                task.run();
+
+                runnables.add(task);
                 id++;
-                logger.info(Integer.toString(completableFutures.size()));
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,11 +88,10 @@ public class UploadFileController {
     }
 
     @Async
-    public CompletableFuture<JSONObject> sendData(MultipartFile file, int id, JSONObject row) {
+    public void sendData(MultipartFile file, int id, JSONObject row) {
         logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
         restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
         logger.info("Saved id:" + id);
-        return CompletableFuture.completedFuture(row);
     }
 
 
