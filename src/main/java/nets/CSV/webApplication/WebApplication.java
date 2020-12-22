@@ -14,8 +14,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @SpringBootApplication
-@EnableEurekaClient
 @EnableAsync
+@EnableEurekaClient
 public class WebApplication{
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
