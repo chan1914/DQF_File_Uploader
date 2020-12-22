@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,7 +70,7 @@ public class UploadFileController {
                 logger.info("Posting row\t" + row);
 
                 logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
-                restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
+                sendData(file, id, row);
                 id++;
             }
         } catch (IOException e) {
@@ -77,6 +78,11 @@ public class UploadFileController {
         }
 
         return "uploadform";
+    }
+
+    @Async
+    public void sendData(MultipartFile file, int id, JSONObject row) {
+        restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
     }
 
 
