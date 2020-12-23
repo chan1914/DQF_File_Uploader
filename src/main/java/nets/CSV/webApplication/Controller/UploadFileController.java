@@ -88,9 +88,10 @@ public class UploadFileController {
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(row.toString()), JSONObject.class)
-                        .retrieve()
-                        .bodyToMono(JSONObject.class);
-
+                        .exchangeToMono(e -> {
+                                return e.bodyToMono(JSONObject.class);
+                        })
+                        .block();
                 id++;
             }
 
