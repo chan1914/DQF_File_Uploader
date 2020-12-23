@@ -82,7 +82,7 @@ public class UploadFileController {
                 //sendData(file, finalId, row);
 
                 webClientBuilder.build().post()
-                        .uri("http://DQF-Analysis-Core/row/")
+                        .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
                         .body(Mono.just(row), JSONObject.class)
                         .retrieve()
                         .bodyToMono(JSONObject.class);
