@@ -79,7 +79,7 @@ public class UploadFileController {
                 logger.info("Posting row\t" + row);
 
                 int finalId = id;
-                sendData(file, finalId, row);
+                //sendData(file, finalId, row);
 
                 webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/")
