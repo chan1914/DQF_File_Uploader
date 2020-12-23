@@ -80,6 +80,8 @@ public class UploadFileController {
             logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
+            List<Mono<JSONObject>> monos = new ArrayList<>();
+
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 //logger.info("Posting row\t" + row);
@@ -87,6 +89,21 @@ public class UploadFileController {
                 int finalId = id;
                 //sendData(file, finalId, row);
 
+
+                monos.add(webClientBuilder.build().post()
+                        .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(row.toString()))
+                        .exchangeToMono(e -> {
+                                return e.bodyToMono(JSONObject.class);
+                        }));
+                openWebClients++;
+                //logger.info("Saved id:" + id);
+                id++;
+            }
+
+            for (Mono<JSONObject> mono : monos){
                 while (openWebClients > webclientLimit){
                     try {
                         Thread.sleep(1);
@@ -94,18 +111,7 @@ public class UploadFileController {
                         e.printStackTrace();
                     }
                 }
-                webClientBuilder.build().post()
-                        .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(row.toString()))
-                        .exchangeToMono(e -> {
-                                return e.bodyToMono(JSONObject.class);
-                        })
-                        .subscribe(jObject -> onPostCoplete(jObject));
-                openWebClients++;
-                //logger.info("Saved id:" + id);
-                id++;
+                mono.subscribe(jObject -> onPostCoplete(jObject));
             }
 
         } catch (IOException e) {
