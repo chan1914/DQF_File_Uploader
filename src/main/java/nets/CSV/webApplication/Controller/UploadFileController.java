@@ -3,6 +3,7 @@ package nets.CSV.webApplication.Controller;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
+import nets.CSV.webApplication.WebApplication;
 import nets.CSV.webApplication.filestorage.FileStorage;
 import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
@@ -73,7 +74,8 @@ public class UploadFileController {
                 logger.info("Posting row\t" + row);
 
                 int finalId = id;
-                Runnable task = () -> sendData(file, finalId, row);
+                _dataSender dataSender = new _dataSender();
+                Runnable task = () -> dataSender.sendData(file, finalId, row);
                 task.run();
 
                 runnables.add(task);
@@ -87,13 +89,17 @@ public class UploadFileController {
         return "uploadform";
     }
 
-    @Async
-    public void sendData(MultipartFile file, int id, JSONObject row) {
-        logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
-        restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
-        logger.info("Saved id:" + id);
-    }
+    private class _dataSender{
+        @Autowired
+        RestTemplate restTemplate;
 
+        @Async
+        public void sendData(MultipartFile file, int id, JSONObject row) {
+            logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
+            restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
+            logger.info("Saved id:" + id);
+        }
+    }
 
 
 
