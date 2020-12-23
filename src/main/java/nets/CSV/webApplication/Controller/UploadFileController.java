@@ -67,18 +67,14 @@ public class UploadFileController {
             logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
-            List<Runnable> runnables = new ArrayList<>();
-
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 logger.info("Posting row\t" + row);
 
                 int finalId = id;
                 _dataSender dataSender = new _dataSender();
-                Runnable task = () -> dataSender.sendData(file, finalId, row);
-                task.run();
+                dataSender.sendData(file, finalId, row);
 
-                runnables.add(task);
                 id++;
             }
 
