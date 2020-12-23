@@ -84,15 +84,14 @@ public class UploadFileController {
                 int finalId = id;
                 //sendData(file, finalId, row);
 
-                webClientBuilder.build().post()
+                Mono<JSONObject> jsonObjectMono = webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> {
                                 return e.bodyToMono(JSONObject.class);
-                        })
-                        .defaultIfEmpty(null);
+                        });
 
                 logger.info("Saved id:" + id);
                 id++;
