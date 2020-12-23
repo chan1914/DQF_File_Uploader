@@ -87,7 +87,7 @@ public class UploadFileController {
                 int finalId = id;
                 //sendData(file, finalId, row);
 
-                while (openWebClients < webclientLimit){
+                while (openWebClients > webclientLimit){
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
