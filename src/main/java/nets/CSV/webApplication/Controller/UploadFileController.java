@@ -9,6 +9,7 @@ import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
@@ -72,8 +73,8 @@ public class UploadFileController {
                 logger.info("Posting row\t" + row);
 
                 int finalId = id;
-                DataSender dataSender = new DataSender();
-                sendData(file, finalId, row);
+                _dataSender dataSender = new _dataSender();
+                dataSender.sendData(file, finalId, row);
 
                 id++;
             }
@@ -85,11 +86,18 @@ public class UploadFileController {
         return "uploadform";
     }
 
-    @Async
-    public void sendData(MultipartFile file, int id, JSONObject row) {
-        logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
-        restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
-        logger.info("Saved id:" + id);
+    @Configurable
+    private class _dataSender{
+        @Autowired
+        RestTemplate template;
+
+        @Async
+        public void sendData(MultipartFile file, int id, JSONObject row) {
+            logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
+            logger.info("Template = " + template);
+            template.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
+            logger.info("Saved id:" + id);
+        }
     }
 
 
