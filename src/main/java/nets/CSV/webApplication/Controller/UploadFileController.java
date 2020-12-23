@@ -38,6 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
+    private int webclientLimit = 1000;
 
     @Autowired
     FileStorage fileStorage;
@@ -50,6 +51,8 @@ public class UploadFileController {
 
     @Autowired
     CSVDigester csvDigester;
+
+    private int openWebClients = 0;
 
     Logger logger = LoggerFactory.getLogger(UploadFileController.class);
 
@@ -84,6 +87,7 @@ public class UploadFileController {
                 int finalId = id;
                 //sendData(file, finalId, row);
 
+                while (openWebClients < webclientLimit)
                 webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
                         .accept(MediaType.APPLICATION_JSON)
@@ -91,8 +95,9 @@ public class UploadFileController {
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> {
                                 return e.bodyToMono(JSONObject.class);
-                        }).subscribe();
-
+                        })
+                        .subscribe(jObject -> onPostCoplete(jObject));
+                openWebClients++;
                 //logger.info("Saved id:" + id);
                 id++;
             }
@@ -104,8 +109,9 @@ public class UploadFileController {
         return "uploadform";
     }
 
-    private void onPostCoplete(JSONObject jo){
-        logger.info("Response from server: " + jo.toJSONString());
+    private void onPostCoplete(JSONObject jsonObject){
+        logger.info("Response from server: " + jsonObject.toJSONString());
+        openWebClients--;
     }
 
     @Async
