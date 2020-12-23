@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
-    private int webclientLimit = 1000;
+    private int webclientLimit = 5000;
 
     @Autowired
     FileStorage fileStorage;
@@ -89,7 +89,7 @@ public class UploadFileController {
 
                 while (openWebClients > webclientLimit){
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
