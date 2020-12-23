@@ -91,8 +91,7 @@ public class UploadFileController {
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> {
                                 return e.bodyToMono(JSONObject.class);
-                        })
-                        .doOnSuccess(jO ->  onPostCoplete(jO));
+                        }).subscribe();
 
                 //logger.info("Saved id:" + id);
                 id++;
