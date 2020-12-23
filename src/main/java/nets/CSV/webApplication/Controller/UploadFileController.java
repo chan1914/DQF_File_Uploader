@@ -79,21 +79,22 @@ public class UploadFileController {
 
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
-                logger.info("Posting row\t" + row);
+                //logger.info("Posting row\t" + row);
 
                 int finalId = id;
                 //sendData(file, finalId, row);
 
-                Mono<JSONObject> jsonObjectMono = webClientBuilder.build().post()
+                webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> {
                                 return e.bodyToMono(JSONObject.class);
-                        });
+                        })
+                        .doOnSuccess(jO ->  onPostCoplete(jO));
 
-                logger.info("Saved id:" + id);
+                //logger.info("Saved id:" + id);
                 id++;
             }
 
@@ -104,6 +105,9 @@ public class UploadFileController {
         return "uploadform";
     }
 
+    private void onPostCoplete(JSONObject jo){
+        logger.info("Response from server: " + jo.toJSONString());
+    }
 
     @Async
     public void sendData(MultipartFile file, int id, JSONObject row) {
