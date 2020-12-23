@@ -7,7 +7,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.http.HttpHeaders;
 import java.util.concurrent.Executor;
@@ -25,6 +27,12 @@ public class WebApplication{
 	@LoadBalanced
 	public RestTemplate getRestTemplate(){
 		return new RestTemplate();
+	}
+
+	@Bean
+	@LoadBalanced
+	public WebClient.Builder webClientBuilder() {
+		return WebClient.builder();
 	}
 
 	@Bean (name = "taskExecutor")

@@ -1,5 +1,6 @@
 package nets.CSV.webApplication.Controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
@@ -21,6 +22,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.*;
 import java.net.UnknownHostException;
@@ -38,6 +41,9 @@ public class UploadFileController {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    WebClient.Builder webClientBuilder;
 
     @Autowired
     CSVDigester csvDigester;
@@ -75,6 +81,12 @@ public class UploadFileController {
                 int finalId = id;
                 sendData(file, finalId, row);
 
+                webClientBuilder.build().post()
+                        .uri("http://DQF-Analysis-Core/row/")
+                        .body(Mono.just(row), JSONObject.class)
+                        .retrieve()
+                        .bodyToMono(JSONObject.class);
+
                 id++;
             }
 
@@ -88,11 +100,8 @@ public class UploadFileController {
 
     @Async
     public void sendData(MultipartFile file, int id, JSONObject row) {
-        WebApplication webApplication = new WebApplication();
-        RestTemplate template = webApplication.getRestTemplate();
         logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
-        logger.info("Template = " + template);
-        template.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
+        restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
         logger.info("Saved id:" + id);
     }
 
