@@ -73,8 +73,7 @@ public class UploadFileController {
                 logger.info("Posting row\t" + row);
 
                 int finalId = id;
-                _dataSender dataSender = new _dataSender();
-                dataSender.sendData(file, finalId, row);
+                sendData(file, finalId, row);
 
                 id++;
             }
@@ -86,18 +85,15 @@ public class UploadFileController {
         return "uploadform";
     }
 
-    @Configurable
-    private class _dataSender{
-        @Autowired
-        RestTemplate template;
 
-        @Async
-        public void sendData(MultipartFile file, int id, JSONObject row) {
-            logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
-            logger.info("Template = " + template);
-            template.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
-            logger.info("Saved id:" + id);
-        }
+    @Async
+    public void sendData(MultipartFile file, int id, JSONObject row) {
+        WebApplication webApplication = new WebApplication();
+        RestTemplate template = webApplication.getRestTemplate();
+        logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
+        logger.info("Template = " + template);
+        template.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
+        logger.info("Saved id:" + id);
     }
 
 
