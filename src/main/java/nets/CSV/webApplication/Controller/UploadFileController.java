@@ -91,8 +91,9 @@ public class UploadFileController {
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> {
                                 return e.bodyToMono(JSONObject.class);
-                        })
-                        .block();
+                        });
+
+                logger.info("Saved id:" + id);
                 id++;
             }
 
@@ -108,7 +109,7 @@ public class UploadFileController {
     public void sendData(MultipartFile file, int id, JSONObject row) {
         logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
         restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
-        logger.info("Saved id:" + id);
+
     }
 
 
