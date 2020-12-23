@@ -86,6 +86,7 @@ public class UploadFileController {
 
                 webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
+                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(row.toString()), JSONObject.class)
                         .exchangeToMono(e -> {
