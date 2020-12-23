@@ -98,7 +98,6 @@ public class UploadFileController {
                         .exchangeToMono(e -> {
                                 return e.bodyToMono(JSONObject.class);
                         }));
-                openWebClients++;
                 //logger.info("Saved id:" + id);
                 id++;
             }
@@ -112,6 +111,7 @@ public class UploadFileController {
                     }
                 }
                 mono.subscribe(jObject -> onPostCoplete(jObject));
+                openWebClients++;
             }
 
         } catch (IOException e) {
