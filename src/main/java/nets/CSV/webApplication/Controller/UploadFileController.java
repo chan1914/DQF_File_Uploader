@@ -104,7 +104,7 @@ public class UploadFileController {
                         .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
                         .doOnError(x -> openWebClients--)
                         .doOnSuccess(x -> openWebClients--)
-                        .doOnSubscribe(x -> openWebClients++)
+                        .doOnRequest(x -> openWebClients++)
                         .subscribe(jObject -> onPostCoplete(jObject));
                 //logger.info("Saved id:" + id);
                 id++;
