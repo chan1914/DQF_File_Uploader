@@ -101,7 +101,6 @@ public class UploadFileController {
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
                         .doOnError(x -> logger.error("failed to send " + finalId))
-                        .doOnSuccess(x -> openWebClients--)
                         .subscribe(jObject -> onPostCoplete(jObject));
                 openWebClients++;
                 //logger.info("Saved id:" + id);
@@ -116,6 +115,7 @@ public class UploadFileController {
     }
 
     private void onPostCoplete(JSONObject jsonObject){
+        openWebClients--;
     }
 
     @Async
