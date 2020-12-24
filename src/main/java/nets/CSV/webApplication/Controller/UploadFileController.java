@@ -89,6 +89,32 @@ public class UploadFileController {
             logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
+            while (rows.size() > 0){
+                if (openWebClients > webclientLimit) {
+                    JSONObject row = rows.get(0);
+                    rows.remove(0);
+                    int finalId = id;
+                    webClientBuilder.build().post()
+                            .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(BodyInserters.fromValue(row.toString()))
+                            .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
+                            .doOnError(x -> logger.error("failed to send " + finalId))
+                            .subscribe(jObject -> onPostCoplete(jObject));
+                    addToOpenWebClients(1);
+                    //logger.info("Saved id:" + id);
+                    id++;
+                }else {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /*
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
                 //logger.info("Posting row\t" + row);
@@ -114,6 +140,8 @@ public class UploadFileController {
                 //logger.info("Saved id:" + id);
                 id++;
             }
+            */
+
 
         } catch (IOException e) {
             e.printStackTrace();
