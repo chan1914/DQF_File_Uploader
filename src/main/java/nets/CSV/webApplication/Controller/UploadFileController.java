@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Controller
 public class UploadFileController {
@@ -55,6 +56,14 @@ public class UploadFileController {
     private int openWebClients = 0;
 
     Logger logger = LoggerFactory.getLogger(UploadFileController.class);
+
+    ReentrantLock lock = new ReentrantLock();
+
+    public void addToOpenWebClients (int i){
+        lock.lock();
+        openWebClients = openWebClients + i;
+        lock.unlock();
+    }
 
     @GetMapping("/")
     public String index() {
@@ -85,7 +94,6 @@ public class UploadFileController {
                 //logger.info("Posting row\t" + row);
 
                 int finalId = id;
-                //sendData(file, finalId, row);
 
                 while (openWebClients > webclientLimit){
                     /*try {
@@ -102,8 +110,8 @@ public class UploadFileController {
                         .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
                         .doOnError(x -> logger.error("failed to send " + finalId))
                         .subscribe(jObject -> onPostCoplete(jObject));
-                openWebClients++;
-                logger.info("Saved id:" + id);
+                addToOpenWebClients(1);
+                //logger.info("Saved id:" + id);
                 id++;
             }
 
@@ -115,15 +123,9 @@ public class UploadFileController {
     }
 
     private void onPostCoplete(JSONObject jsonObject){
-        openWebClients--;
+        addToOpenWebClients(-1);
     }
 
-    @Async
-    public void sendData(MultipartFile file, int id, JSONObject row) {
-        logger.info("resolved valid id for group " + file.getOriginalFilename() + " : " + id);
-        restTemplate.postForEntity("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id, row, JSONObject.class);
-
-    }
 
 
 
