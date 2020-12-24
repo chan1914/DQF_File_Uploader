@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
-    private int webclientLimit = 200;
+    private int webclientLimit = 500;
 
     @Autowired
     FileStorage fileStorage;
@@ -88,11 +88,11 @@ public class UploadFileController {
                 //sendData(file, finalId, row);
 
                 while (openWebClients > webclientLimit){
-                    try {
+                    /*try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                 }
                 webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
