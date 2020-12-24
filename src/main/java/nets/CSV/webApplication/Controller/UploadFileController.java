@@ -124,6 +124,7 @@ public class UploadFileController {
 
     private void onPostCoplete(JSONObject jsonObject){
         addToOpenWebClients(-1);
+        logger.info("Open web clients at: " + openWebClients);
     }
 
 
