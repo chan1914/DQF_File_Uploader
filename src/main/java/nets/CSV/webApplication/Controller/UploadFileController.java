@@ -100,11 +100,10 @@ public class UploadFileController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(row.toString()))
                         .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
-                        .doOnError(x -> openWebClients--)
+                        .doOnError(x -> logger.error("failed to send " + finalId))
                         .doOnSuccess(x -> openWebClients--)
                         .subscribe(jObject -> onPostCoplete(jObject));
                 openWebClients++;
-                logger.info("Now " + openWebClients + " open web clients");
                 //logger.info("Saved id:" + id);
                 id++;
             }
