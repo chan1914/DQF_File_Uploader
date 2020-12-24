@@ -86,8 +86,7 @@ public class UploadFileController {
         try {
             String file1 = Files.readString(Paths.get("filestorage/" + file.getOriginalFilename()));
             List<JSONObject> rows = csvDigester.CSVToJSONList(file1);
-            int totalRows = rows.size();
-            logger.info("Sending rows\t" + totalRows);
+            logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
             while (rows.size() > 0){
@@ -104,7 +103,6 @@ public class UploadFileController {
                             .doOnError(x -> logger.error("failed to send " + finalId))
                             .subscribe(jObject -> onPostCoplete(jObject));
                     addToOpenWebClients(1);
-                    model.addAttribute("progress", ((totalRows-rows.size())/totalRows)*100);
                     //logger.info("Saved id:" + id);
                     id++;
                 }else {
