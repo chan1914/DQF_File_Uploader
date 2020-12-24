@@ -117,7 +117,6 @@ public class UploadFileController {
     }
 
     private void onPostCoplete(JSONObject jsonObject){
-        openWebClients--;
     }
 
     @Async
