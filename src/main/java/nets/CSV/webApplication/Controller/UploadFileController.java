@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
-    private int webclientLimit = 500;
+    private int webclientLimit = 100;
 
     @Autowired
     FileStorage fileStorage;
@@ -79,8 +79,6 @@ public class UploadFileController {
             List<JSONObject> rows = csvDigester.CSVToJSONList(file1);
             logger.info("Sending rows\t" + rows.size());
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
-
-            List<Mono<JSONObject>> monos = new ArrayList<>();
 
             for(JSONObject row : rows){
                 JSONObject jsonObject = new JSONObject(row);
