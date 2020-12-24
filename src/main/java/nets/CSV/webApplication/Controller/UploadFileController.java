@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Controller
 public class UploadFileController {
-    private int webclientLimit = 500;
+    private int webclientLimit = 200;
 
     @Autowired
     FileStorage fileStorage;
