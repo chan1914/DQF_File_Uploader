@@ -114,34 +114,6 @@ public class UploadFileController {
                 }
             }
 
-            /*
-            for(JSONObject row : rows){
-                JSONObject jsonObject = new JSONObject(row);
-                //logger.info("Posting row\t" + row);
-
-                int finalId = id;
-
-                while (openWebClients > webclientLimit){
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                webClientBuilder.build().post()
-                        .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(row.toString()))
-                        .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
-                        .doOnError(x -> logger.error("failed to send " + finalId))
-                        .subscribe(jObject -> onPostCoplete(jObject));
-                addToOpenWebClients(1);
-                //logger.info("Saved id:" + id);
-                id++;
-            }
-            */
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -152,7 +124,7 @@ public class UploadFileController {
 
     private void onPostCoplete(JSONObject jsonObject){
         addToOpenWebClients(-1);
-        logger.info("Open web clients at: " + openWebClients);
+        //logger.info("Open web clients at: " + openWebClients);
     }
 
 
