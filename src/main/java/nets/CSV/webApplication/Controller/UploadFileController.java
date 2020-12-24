@@ -100,7 +100,8 @@ public class UploadFileController {
         return "uploadform";
     }
 
-    private void _executeMonos(List<Mono<JSONObject>> monos) {
+    @Async
+    void _executeMonos(List<Mono<JSONObject>> monos) {
         for (Mono<JSONObject> mono : monos){
             while (openWebClients > webclientLimit){
                 try {
