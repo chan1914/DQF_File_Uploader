@@ -38,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
-    private int webclientLimit = 100;
+    private int webclientLimit = 50;
 
     @Autowired
     FileStorage fileStorage;
@@ -102,8 +102,9 @@ public class UploadFileController {
                         .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
                         .doOnError(x -> openWebClients--)
                         .doOnSuccess(x -> openWebClients--)
-                        .doOnRequest(x -> openWebClients++)
                         .subscribe(jObject -> onPostCoplete(jObject));
+                openWebClients++;
+                logger.info("Now " + openWebClients + " open web clients");
                 //logger.info("Saved id:" + id);
                 id++;
             }
@@ -116,7 +117,6 @@ public class UploadFileController {
     }
 
     private void onPostCoplete(JSONObject jsonObject){
-        logger.info("Response from server: " + jsonObject.toJSONString());
         openWebClients--;
     }
 
