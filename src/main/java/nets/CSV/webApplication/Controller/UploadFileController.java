@@ -91,7 +91,7 @@ public class UploadFileController {
 
                 while (openWebClients > webclientLimit){
                     try {
-                        Thread.sleep(1);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
