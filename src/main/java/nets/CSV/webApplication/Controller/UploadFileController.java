@@ -96,11 +96,11 @@ public class UploadFileController {
                 int finalId = id;
 
                 while (openWebClients > webclientLimit){
-                    /*try {
+                    try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                 }
                 webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
