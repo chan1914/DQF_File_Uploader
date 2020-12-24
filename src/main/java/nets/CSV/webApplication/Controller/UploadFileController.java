@@ -103,7 +103,7 @@ public class UploadFileController {
                         .doOnError(x -> logger.error("failed to send " + finalId))
                         .subscribe(jObject -> onPostCoplete(jObject));
                 openWebClients++;
-                //logger.info("Saved id:" + id);
+                logger.info("Saved id:" + id);
                 id++;
             }
 
