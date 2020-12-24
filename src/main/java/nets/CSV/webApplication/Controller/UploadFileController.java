@@ -90,7 +90,7 @@ public class UploadFileController {
             int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
             while (rows.size() > 0){
-                if (openWebClients > webclientLimit) {
+                if (openWebClients < webclientLimit) {
                     JSONObject row = rows.get(0);
                     rows.remove(0);
                     int finalId = id;
