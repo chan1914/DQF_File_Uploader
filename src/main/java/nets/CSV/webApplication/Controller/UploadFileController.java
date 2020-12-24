@@ -1,11 +1,17 @@
 package nets.CSV.webApplication.Controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
+import nets.CSV.webApplication.WebApplication;
 import nets.CSV.webApplication.filestorage.FileStorage;
+import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
@@ -13,17 +19,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class UploadFileController {
@@ -78,20 +89,26 @@ public class UploadFileController {
                 int finalId = id;
                 //sendData(file, finalId, row);
 
-
-                monos.add(webClientBuilder.build().post()
+                while (openWebClients > webclientLimit){
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                webClientBuilder.build().post()
                         .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(row.toString()))
-                        .exchangeToMono(e -> {
-                                return e.bodyToMono(JSONObject.class);
-                        }));
+                        .exchangeToMono(e -> e.bodyToMono(JSONObject.class))
+                        .doOnError(x -> openWebClients--)
+                        .doOnSuccess(x -> openWebClients--)
+                        .doOnSubscribe(x -> openWebClients++)
+                        .subscribe(jObject -> onPostCoplete(jObject));
                 //logger.info("Saved id:" + id);
                 id++;
             }
-
-            _executeMonos(monos);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,25 +117,9 @@ public class UploadFileController {
         return "uploadform";
     }
 
-    @Async
-    void _executeMonos(List<Mono<JSONObject>> monos) {
-        for (Mono<JSONObject> mono : monos){
-            while (openWebClients > webclientLimit){
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            mono.doOnSuccess(x -> openWebClients--)
-                    .doOnError(x -> openWebClients--)
-                    .subscribe(jObject -> onPostCoplete(jObject));
-            openWebClients++;
-        }
-    }
-
     private void onPostCoplete(JSONObject jsonObject){
         logger.info("Response from server: " + jsonObject.toJSONString());
+        openWebClients--;
     }
 
     @Async
