@@ -30,7 +30,11 @@
 					<td th:text="${rowStat.count}">1</td>
 					<td th:text="${file.filename}">File-Name</td>
 					<td><a th:href="${file.url}">Link</a></td>
-					<td> <button th:href="@{/delete/{fileName}(fileName = ${file.filename})}">Delete</button></td>
+					<td>
+						<form method="post" th:action="@{/delete/{fileName}(fileName = ${file.filename})}">
+							<button type="submit" name="delete">Delete</button>
+						</form>
+					</td>
 				</tr>
 				</tbody>
 			</table>
