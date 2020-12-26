@@ -21,6 +21,7 @@
 					<th>No</th>
 					<th>Filename</th>
 					<th>Download</th>
+
 				</tr>
 				</thead>
 				<tbody>
@@ -28,6 +29,7 @@
 					<td th:text="${rowStat.count}">1</td>
 					<td th:text="${file.filename}">File-Name</td>
 					<td><a th:href="${file.url}">Link</a></td>
+					<td> <a th:href="${file.delete}"> Delete </a></td>
 				</tr>
 				</tbody>
 			</table>
@@ -35,9 +37,6 @@
 				<a href="/" class="btn btn-light btn-block" role="button">Back to Upload Form</a>
 			</div>
 
-			<div>
-
-			</div>
 		</div>
 	</div>
 </div>
