@@ -60,7 +60,7 @@ public class DownloadFileController {
 					.body(file);	
 	}
 
-	@DeleteMapping ("/delete/{fileName}")
+	@PostMapping ("/delete/{fileName}")
 	public ResponseEntity<String> deleteFile(@PathVariable("fileName") String fileName){
 		logger.info("Deleting: " + fileName);
 		fileStorage.tryDeleteFile(fileName);
