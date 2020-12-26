@@ -3,6 +3,8 @@ package nets.CSV.webApplication.Controller;
 
 import nets.CSV.webApplication.filestorage.FileStorage;
 import nets.CSV.webApplication.model.FileInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +24,8 @@ public class DownloadFileController {
 
 	@Autowired
 	FileStorage fileStorage;
+
+	Logger logger = LoggerFactory.getLogger(UploadFileController.class);
 
 	/*
 	 * Retrieve Files' Information
@@ -56,6 +60,7 @@ public class DownloadFileController {
 
 	@PostMapping("/delete/{fileName}")
 	public void deleteFile(@PathVariable("fileName") String fileName){
+		logger.info("Deleting: " + fileName);
 		fileStorage.tryDeleteFile(fileName);
 	}
 }
