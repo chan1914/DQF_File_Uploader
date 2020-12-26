@@ -31,7 +31,10 @@
 					<td th:text="${file.filename}">File-Name</td>
 					<td><a th:href="${file.url}">Link</a></td>
 					<td>
-						<button th:filename="${file.filename}" onclick="deleteFile(this.getAttribute('filename'))">Delete</button>
+						<button
+								th:filename="${file.filename}"
+								onclick="deleteFile(this.getAttribute('filename'))">Delete
+						</button>
 					</td>
 				</tr>
 				</tbody>
