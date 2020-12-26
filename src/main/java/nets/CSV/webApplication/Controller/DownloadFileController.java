@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public class DownloadFileController {
 
 	@Autowired
 	FileStorage fileStorage;
+
+	@Autowired
+	RestTemplate restTemplate;
 
 	Logger logger = LoggerFactory.getLogger(UploadFileController.class);
 
@@ -64,6 +68,7 @@ public class DownloadFileController {
 	public ResponseEntity<String> deleteFile(@PathVariable("fileName") String fileName){
 		logger.info("Deleting: " + fileName);
 		fileStorage.tryDeleteFile(fileName);
+		restTemplate.postForObject("http://DQF-Analysis-Repo/Group/Delete/" + fileName, null, Boolean.class);
 
 		return new ResponseEntity<String>(fileName, HttpStatus.OK);
 	}
