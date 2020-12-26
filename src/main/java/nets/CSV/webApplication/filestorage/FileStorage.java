@@ -12,4 +12,5 @@ public interface FileStorage {
     public void deleteAll();
     public void init();
     public Stream<Path> loadFiles();
+    public boolean tryDeleteFile(String fileName);
 }

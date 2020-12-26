@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.List;
@@ -51,5 +52,10 @@ public class DownloadFileController {
 		return ResponseEntity.ok()
 					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
 					.body(file);	
+	}
+
+	@PostMapping("/delete/{fileName}")
+	public void deleteFile(@PathVariable("fileName") String fileName){
+		fileStorage.tryDeleteFile(fileName);
 	}
 }

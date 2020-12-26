@@ -21,6 +21,7 @@
 					<th>No</th>
 					<th>Filename</th>
 					<th>Download</th>
+					<th></th>
 
 				</tr>
 				</thead>
@@ -29,7 +30,7 @@
 					<td th:text="${rowStat.count}">1</td>
 					<td th:text="${file.filename}">File-Name</td>
 					<td><a th:href="${file.url}">Link</a></td>
-
+					<td> <button a href="/delete">Delete</button></td>
 				</tr>
 				</tbody>
 			</table>

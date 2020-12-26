@@ -48,6 +48,15 @@ public class FileStorageImpl implements FileStorage{
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
+    public boolean tryDeleteFile(String fileName){
+        try {
+            Files.delete(rootLocation.resolve(fileName));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
 
     public void init() {
         try {
