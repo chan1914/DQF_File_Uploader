@@ -30,7 +30,7 @@
 					<td th:text="${rowStat.count}">1</td>
 					<td th:text="${file.filename}">File-Name</td>
 					<td><a th:href="${file.url}">Link</a></td>
-					<td> <button a href="/delete/${file.filename}">Delete</button></td>
+					<td> <button a href="@{/delete/{fileName}(fileName = ${file.filename})}">Delete</button></td>
 				</tr>
 				</tbody>
 			</table>
