@@ -31,7 +31,7 @@
 					<td th:text="${file.filename}">File-Name</td>
 					<td><a th:href="${file.url}">Link</a></td>
 					<td>
-						<form method="post" th:action="@{/delete/{fileName}(fileName = ${file.filename})}">
+						<form method="delete" th:action="@{/delete/{fileName}(fileName = ${file.filename})}">
 							<button type="submit" name="delete">Delete</button>
 						</form>
 					</td>
