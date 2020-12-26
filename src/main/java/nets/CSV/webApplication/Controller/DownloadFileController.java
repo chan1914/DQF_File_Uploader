@@ -56,7 +56,7 @@ public class DownloadFileController {
 					.body(file);	
 	}
 
-	@RequestMapping(value = "/delete/{fileName}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/delete/{fileName}", method = RequestMethod.POST)
 	public void deleteFile(@PathVariable("fileName") String fileName){
 		logger.info("Deleting: " + fileName);
 		fileStorage.tryDeleteFile(fileName);
