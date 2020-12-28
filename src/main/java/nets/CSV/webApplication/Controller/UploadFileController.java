@@ -114,17 +114,12 @@ public class UploadFileController {
                     }
                 }
             }*/
-
-            JSONArray rowsArr = new JSONArray();
-            for (JSONObject row : rows){
-                rowsArr.put(row);
-            }
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             org.springframework.http.HttpEntity<String> request = new HttpEntity<String>(rowsArr.toString(), headers);
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
-                    request,
+                    rows,
                     JSONArray.class);
 
 
