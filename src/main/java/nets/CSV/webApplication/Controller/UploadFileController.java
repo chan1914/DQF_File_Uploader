@@ -7,11 +7,12 @@ import net.minidev.json.parser.JSONParser;
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
 import nets.CSV.webApplication.WebApplication;
 import nets.CSV.webApplication.filestorage.FileStorage;
-import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -118,9 +119,12 @@ public class UploadFileController {
             for (JSONObject row : rows){
                 rowsArr.put(row);
             }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            org.springframework.http.HttpEntity<String> request = new HttpEntity<String>(rowsArr.toString(), headers);
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
-                    rowsArr.toString(),
+                    request,
                     JSONArray.class);
 
 
