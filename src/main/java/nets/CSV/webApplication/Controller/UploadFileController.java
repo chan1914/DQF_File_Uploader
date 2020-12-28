@@ -1,7 +1,8 @@
 package nets.CSV.webApplication.Controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.minidev.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import nets.CSV.webApplication.CSVDigester.CSVDigester;
 import nets.CSV.webApplication.WebApplication;
@@ -87,15 +88,14 @@ public class UploadFileController {
             String file1 = Files.readString(Paths.get("filestorage/" + file.getOriginalFilename()));
             List<JSONObject> rows = csvDigester.CSVToJSONList(file1);
             logger.info("Sending rows\t" + rows.size());
-            int id = restTemplate.getForObject("http://DQF-Analysis-Repo/GetValidId/" + file.getOriginalFilename(), int.class);
 
-            while (rows.size() > 0){
+            /*while (rows.size() > 0){
                 if (openWebClients < webclientLimit) {
                     JSONObject row = rows.get(0);
                     rows.remove(0);
                     int finalId = id;
                     webClientBuilder.build().post()
-                            .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename() + "/" + id)
+                            .uri("http://DQF-Analysis-Core/row/" + file.getOriginalFilename())
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(BodyInserters.fromValue(row.toString()))
@@ -112,7 +112,16 @@ public class UploadFileController {
                         e.printStackTrace();
                     }
                 }
+            }*/
+
+            JSONArray rowsArr = new JSONArray();
+            for (JSONObject row : rows){
+                rowsArr.put(row);
             }
+            restTemplate.postForObject(
+                    "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
+                    rowsArr,
+                    JSONArray.class);
 
 
         } catch (IOException e) {

@@ -1,7 +1,8 @@
 package nets.CSV.webApplication.CSVDigester;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import net.minidev.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 
@@ -111,10 +112,18 @@ public class CSVDigester {
         for (String str : headers.split(",")) {
 
             if (typeSelector(rowValue[iterator]).equals("string")) {
-                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                try {
+                    lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             else{
-                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                try {
+                    lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             iterator++;
@@ -131,10 +140,18 @@ public class CSVDigester {
         for (String str : headers.split(",")) {
 
             if (typeSelector(rowValue[iterator]).equals("string")) {
-                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                try {
+                    lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             else{
-                lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                try {
+                    lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             iterator++;
