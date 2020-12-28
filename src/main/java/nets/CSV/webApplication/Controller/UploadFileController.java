@@ -1,6 +1,7 @@
 package nets.CSV.webApplication.Controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -115,13 +116,18 @@ public class UploadFileController {
                 }
             }*/
 
-            List<String> stringRowList = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray();
             for (JSONObject row : rows){
-                stringRowList.add(row.toString());
+                jsonArray.put(row.toString());
             }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<String>(jsonArray.toString(), headers);
+
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
-                    stringRowList,
+                    request,
                     JSONArray.class);
 
 
