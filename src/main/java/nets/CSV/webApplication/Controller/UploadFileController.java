@@ -120,7 +120,7 @@ public class UploadFileController {
             }
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
-                    rowsArr,
+                    rowsArr.toString(),
                     JSONArray.class);
 
 
