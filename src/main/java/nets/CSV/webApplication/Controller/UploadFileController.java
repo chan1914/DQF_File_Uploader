@@ -128,7 +128,7 @@ public class UploadFileController {
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/rows/" + file.getOriginalFilename(),
                     request,
-                    void.class);
+                    String.class);
 
 
         } catch (IOException e) {
