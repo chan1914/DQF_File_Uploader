@@ -114,9 +114,6 @@ public class UploadFileController {
                     }
                 }
             }*/
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            org.springframework.http.HttpEntity<String> request = new HttpEntity<String>(rowsArr.toString(), headers);
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
                     rows,
