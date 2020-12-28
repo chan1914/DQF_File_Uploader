@@ -126,7 +126,7 @@ public class UploadFileController {
             HttpEntity<String> request = new HttpEntity<String>(jsonArray.toString(), headers);
 
             restTemplate.postForObject(
-                    "http://DQF-Analysis-Core/row/" + file.getOriginalFilename(),
+                    "http://DQF-Analysis-Core/rows/" + file.getOriginalFilename(),
                     request,
                     void.class);
 
