@@ -114,9 +114,14 @@ public class UploadFileController {
                     }
                 }
             }*/
+
+            List<String> stringRowList = new ArrayList<>();
+            for (JSONObject row : rows){
+                stringRowList.add(row.toString());
+            }
             restTemplate.postForObject(
                     "http://DQF-Analysis-Core/row/addList/" + file.getOriginalFilename(),
-                    rows,
+                    stringRowList,
                     JSONArray.class);
 
 
