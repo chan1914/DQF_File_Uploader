@@ -138,19 +138,26 @@ public class CSVDigester {
         String[] rowValue = row.split(",");
 
         for (String str : headers.split(",")) {
-
-            if (typeSelector(rowValue[iterator]).equals("string")) {
-                try {
-                    lineJSON.put(String.valueOf(str), rowValue[iterator]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            try {
+                if (typeSelector(rowValue[iterator]).equals("string")) {
+                    try {
+                        lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            else{
+                else{
+                    try {
+                        lineJSON.put(String.valueOf(str), rowValue[iterator]);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }catch (IndexOutOfBoundsException e){
                 try {
-                    lineJSON.put(String.valueOf(str), rowValue[iterator]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    lineJSON.put(String.valueOf(str), null);
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
                 }
             }
 
