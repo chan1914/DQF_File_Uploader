@@ -125,10 +125,7 @@ public class UploadFileController {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> request = new HttpEntity<String>(jsonArray.toString(), headers);
 
-            restTemplate.postForObject(
-                    "http://DQF-Analysis-Core/rows/" + file.getOriginalFilename(),
-                    request,
-                    String.class);
+            sendRequest(file.getOriginalFilename(), request);
 
 
         } catch (IOException e) {
@@ -136,6 +133,14 @@ public class UploadFileController {
         }
 
         return "uploadform";
+    }
+
+    @Async
+    void sendRequest(String fileName, HttpEntity<String> request) {
+        restTemplate.postForObject(
+                "http://DQF-Analysis-Core/rows/" + fileName,
+                request,
+                String.class);
     }
 
     private void onPostCoplete(JSONObject jsonObject){
