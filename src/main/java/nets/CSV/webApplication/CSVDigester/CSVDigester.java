@@ -3,12 +3,15 @@ package nets.CSV.webApplication.CSVDigester;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class CSVDigester {
@@ -95,11 +98,23 @@ public class CSVDigester {
 //            }
 //        }
         // return generateJSON(lines);
-
+        List<CompletableFuture<JSONObject>> completableFutures = new ArrayList<>();
         ArrayList<JSONObject> JSONCollection = new ArrayList<>();
         for (int i = 1; i < lines.size(); i++) {
-            JSONCollection.add(SerializeRowAsJson(lines.get(0), lines.get(i)));
+            completableFutures.add(SerializeRowAsJson(lines.get(0), lines.get(i)));
         }
+        do {
+            if (completableFutures.get(0).isDone()) {
+                try {
+                    JSONCollection.add(completableFutures.get(0).get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                completableFutures.remove(0);
+            }
+        }while (completableFutures.size() != 0);
         return JSONCollection;
     }
 
@@ -131,7 +146,8 @@ public class CSVDigester {
         return String.valueOf(lineJSON);
     }
 
-    public JSONObject SerializeRowAsJson(String headers, String row) {
+    @Async
+    public CompletableFuture<JSONObject> SerializeRowAsJson(String headers, String row) {
 
         int iterator = 0;
         JSONObject lineJSON = new JSONObject();
@@ -163,7 +179,7 @@ public class CSVDigester {
 
             iterator++;
         }
-        return lineJSON;
+        return CompletableFuture.completedFuture(lineJSON);
     }
 
 
