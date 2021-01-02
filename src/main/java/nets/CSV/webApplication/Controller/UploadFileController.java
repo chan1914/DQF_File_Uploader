@@ -125,10 +125,14 @@ public class UploadFileController {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> request = new HttpEntity<String>(jsonArray.toString(), headers);
 
-            restTemplate.postForObject(
-                    "http://DQF-Analysis-Core/rows/" + file.getOriginalFilename(),
-                    request,
-                    String.class);
+            try {
+                restTemplate.postForObject(
+                        "http://DQF-Analysis-Core/rows/" + file.getOriginalFilename(),
+                        request,
+                        String.class);
+            }catch (HttpServerErrorException){
+                model.addAttribute("message", "Failed to upload " + file.getOriginalFilename() + "unexpected server error");
+            }
 
 
         } catch (IOException e) {
