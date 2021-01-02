@@ -130,8 +130,9 @@ public class UploadFileController {
                         "http://DQF-Analysis-Core/rows/" + file.getOriginalFilename(),
                         request,
                         String.class);
-            }catch (HttpServerErrorException){
+            }catch (HttpServerErrorException e){
                 model.addAttribute("message", "Failed to upload " + file.getOriginalFilename() + "unexpected server error");
+                fileStorage.tryDeleteFile(file.getOriginalFilename());
             }
 
 
