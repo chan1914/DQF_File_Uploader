@@ -155,7 +155,14 @@ public class CSVDigester {
 
         for (String str : headers.split(",")) {
             try {
-                if (typeSelector(rowValue[iterator]).equals("string")) {
+                if (rowValue[iterator].equals("null")){
+                    try {
+                        lineJSON.put(str, JSONObject.NULL);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (typeSelector(rowValue[iterator]).equals("string")) {
                     try {
                         lineJSON.put(String.valueOf(str), rowValue[iterator]);
                     } catch (JSONException e) {
@@ -171,7 +178,7 @@ public class CSVDigester {
                 }
             }catch (IndexOutOfBoundsException e){
                 try {
-                    lineJSON.put(String.valueOf(str), null);
+                    lineJSON.put(String.valueOf(str), JSONObject.NULL);
                 } catch (JSONException jsonException) {
                     jsonException.printStackTrace();
                 }
