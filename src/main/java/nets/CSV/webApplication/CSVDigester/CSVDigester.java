@@ -157,7 +157,7 @@ public class CSVDigester {
             try {
                 if (rowValue[iterator].equals("null")){
                     try {
-                        lineJSON.put(str, JSONObject.NULL);
+                        lineJSON.put(str, null);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
